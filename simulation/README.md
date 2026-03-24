@@ -28,9 +28,8 @@ Install with:
 
 ```text
 pip install numpy pandas
-Input data
 ```
-
+## Input data
 Both simulations expect a genotype matrix in CSV format:
 
 rows = individuals
@@ -44,9 +43,9 @@ run_simulation2.py
 ```
 **Simulation 1: Overlapping Additive and Epistatic Genetic Architecture**
 
-Overview
+## Overview
 
-For each simulation setting:
+## For each simulation setting:
 
 a set of additive causal SNPs and a set of epistatic causal SNPs are selected from the genotype matrix,
 the two sets are allowed to overlap by a user-defined proportion,
@@ -54,7 +53,7 @@ additive effects are generated as a linear combination of additive SNP genotypes
 epistatic effects are generated from all pairwise multiplicative interactions among epistatic SNPs,
 the final phenotype is formed by summing additive and epistatic components and adding Gaussian noise.
 
-The current implementation uses:
+## The current implementation uses:
 
 broad-sense heritability: H2 = 0.20
 additive variance proportion: rho = 0.05
@@ -62,16 +61,16 @@ epistatic variance proportion: 1 - rho = 0.95
 
 This creates a strongly non-additive phenotype architecture.
 
-Simulation design
+**Simulation design**
 
-Simulation 1 evaluates the Cartesian product of:
+## Simulation 1 evaluates the Cartesian product of:
 
 causal SNP counts: 15, 50, 100, 250
 overlap proportions: 0.3, 0.5, 0.7, 0.9
 
-This gives 16 simulation scenarios in total.
+## This gives 16 simulation scenarios in total.
 
-For each scenario:
+## For each scenario:
 
 num_additive = N
 num_epistatic = N
@@ -89,7 +88,7 @@ So the number of interaction terms is:
 100 SNPs → 4,950 pairs
 250 SNPs → 31,125 pairs
 
-**Files**
+## Files
 simulate1.py
 Contains the core Simulation 1 function:
 genotype standardization
@@ -125,7 +124,7 @@ simulation1_outputs/
 ├── ...
 └── simulation1_summary.csv
 ```
-**Output files:**
+## Output files:
 
 phenotype.csv — simulated phenotype and component values for each individual
 additive_snps.txt — SNPs included in the additive set
@@ -138,11 +137,11 @@ simulation1_summary.csv — summary across all Simulation 1 scenarios
 
 **Simulation 2: Sparse Epistatic Architecture with Controlled Interaction Complexity**
 
-Overview
+## Overview
 
 Simulation 2 generates quantitative phenotypes using a structured nonlinear architecture in which epistatic effects arise only from interactions between two disjoint SNP subsets.
 
-For each simulation setting:
+## For each simulation setting:
 
 N causal SNPs are randomly selected from the genotype matrix,
 the selected SNPs are partitioned into three subsets:
@@ -155,9 +154,9 @@ the final phenotype is formed by summing the marginal component, the epistatic c
 
 This simulation creates a nonlinear phenotype architecture while keeping interaction complexity computationally manageable.
 
-Simulation design
+**Simulation design**
 
-Simulation 2 evaluates the following causal SNP counts:
+## Simulation 2 evaluates the following causal SNP counts:
 
 15
 50
@@ -176,7 +175,7 @@ The remaining variance is assigned to epistatic effects:
 
 1 - rho = 0.95
 
-**Files**
+## Files
 simulate2.py
 Contains the core Simulation 2 function:
 causal SNP selection
@@ -216,7 +215,7 @@ simulation2_outputs/
 └── simulation2_summary.csv
 ```
 
-**Output files:**
+## Output files:
 
 simulated_phenotype.csv — simulated phenotype and component values for each individual
 causal_snps.txt — full list of selected causal SNPs
@@ -226,8 +225,7 @@ beta_marginal.csv — marginal SNP effect sizes
 metadata.json — scenario-specific metadata, including subset sizes, number of interaction pairs, and realized variance components
 simulation2_summary.csv — summary across all Simulation 2 scenarios
 
-
-**Notes**
+## Notes
 Genotypes are standardized before phenotype generation.
 Missing values are mean-imputed in Simulation 2 before standardization.
 Additive and epistatic components are rescaled to target the requested variance contributions.
