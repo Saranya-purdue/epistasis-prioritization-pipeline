@@ -138,8 +138,8 @@ outputs/vae_shap/
 
 **Output files:**
 
-- latent_<i>_top_features.csv — top-ranked original features for latent dimension i
-- latent_<i>_shap_barplot.png — barplot of mean absolute SHAP values for latent dimension i
+- latent_i_top_features.csv — top-ranked original features for latent dimension i
+- latent_i_shap_barplot.png — barplot of mean absolute SHAP values for latent dimension i
 - aggregated_top_snps.csv — aggregated feature ranking across latent dimensions
 
 **Notes**
