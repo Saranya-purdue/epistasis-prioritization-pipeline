@@ -6,9 +6,7 @@ The simulations generate quantitative phenotypes from genotype matrices under co
 
 ```markdown
 ## Module structure
-
 ```text
-
 simulation/
 ├── README.md
 ├── simulate1.py
@@ -17,7 +15,7 @@ simulation/
 └── run_simulation2.py
 
 ```markdown
-Requirements
+## Module structure
 
 The code uses Python with:
 
