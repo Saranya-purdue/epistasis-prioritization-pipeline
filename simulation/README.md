@@ -6,7 +6,7 @@ The simulations generate quantitative phenotypes from genotype matrices under co
 
 ## Repository structure
 
-```text
+text
 .
 ├── README.md
 ├── simulate1.py
