@@ -22,41 +22,47 @@ vae_latent_preparation/
 
 The code uses Python with:
 
-numpy
-pandas
-matplotlib
-tensorflow
-scikit-learn
-umap-learn
-shap
-joblib
+- numpy
+- pandas
+- matplotlib
+- tensorflow
+- scikit-learn
+- umap-learn
+- shap
+- joblib
+
 Install with:
 
 pip install numpy pandas matplotlib tensorflow scikit-learn umap-learn shap joblib
+
 Input data
 
 The module expects an input CSV file with:
 
 rows = samples
+
 columns = features or SNPs
 
 Example:
 
 first column = sample ID
+
 remaining columns = genotype dosages or feature values
-Step 1: VAE training and latent export
 
-**vae_latent_preparation.py performs:**
+**Step 1: VAE training and latent export**
 
-input loading
-MinMax normalization
-VAE training
-latent extraction
-training-loss plotting
-reconstruction error plotting
-UMAP visualization of the latent space
+vae_latent_preparation.py performs:
+
+- input loading
+- MinMax normalization
+- VAE training
+- latent extraction
+- training-loss plotting
+- reconstruction error plotting
+- UMAP visualization of the latent space
 
 How to run
+
 ```text
 python vae_latent_preparation.py \
   --input_csv path/to/input_features.csv \
@@ -66,6 +72,7 @@ python vae_latent_preparation.py \
   --batch_size 128
 ```
 Main outputs
+
 ```text
 outputs/vae_run/
 ├── latent_space.csv
@@ -76,22 +83,23 @@ outputs/vae_run/
 ```
 **Output files:**
 
-latent_space.csv — latent representation for each sample
-training_losses.png — training and validation reconstruction loss
-reconstruction_error_hist.png — reconstruction error distribution
-latent_umap.png — UMAP projection of the latent space
-run_summary.json — basic run metadata and reconstruction MSE
+- latent_space.csv — latent representation for each sample
+- training_losses.png — training and validation reconstruction loss
+- reconstruction_error_hist.png — reconstruction error distribution
+- latent_umap.png — UMAP projection of the latent space
+- run_summary.json — basic run metadata and reconstruction MSE
 
 **Step 2: RF + SHAP ranking for latent dimensions**
 
 latent_shap_ranking.py uses the original input matrix and the exported latent space to:
 
-fit one Random Forest model per latent dimension
-compute SHAP values for original features
-save top-ranked features for each latent dimension
-aggregate the top signals across all latent dimensions
+- fit one Random Forest model per latent dimension
+- compute SHAP values for original features
+- save top-ranked features for each latent dimension
+- aggregate the top signals across all latent dimensions
 
 How to run:
+
 ```text
 python latent_shap_ranking.py \
   --input_csv path/to/input_features.csv \
@@ -113,6 +121,7 @@ python latent_shap_ranking.py \
   --prefer_threads
 ```
 **Main outputs:**
+
 ```text
 outputs/vae_shap/
 ├── latent_0_top_features.csv
@@ -122,18 +131,20 @@ outputs/vae_shap/
 ├── ...
 └── aggregated_top_snps.csv
 ```
+
 **Output files:**
 
-latent_<i>_top_features.csv — top-ranked original features for latent dimension i
-latent_<i>_shap_barplot.png — barplot of mean absolute SHAP values for latent dimension i
-aggregated_top_snps.csv — aggregated feature ranking across latent dimensions
+- latent_<i>_top_features.csv — top-ranked original features for latent dimension i
+- latent_<i>_shap_barplot.png — barplot of mean absolute SHAP values for latent dimension i
+- aggregated_top_snps.csv — aggregated feature ranking across latent dimensions
 
 **Notes**
-vae_latent_preparation.py and latent_shap_ranking.py are intentionally separated so VAE training and SHAP ranking can be run independently.
-SHAP can be computationally expensive for high-dimensional data and many latent dimensions.
-Use --n_jobs and --prefer_threads carefully depending on available memory and CPU resources.
+
+- vae_latent_preparation.py and latent_shap_ranking.py are intentionally separated so VAE training and SHAP ranking can be run independently.
+- SHAP can be computationally expensive for high-dimensional data and many latent dimensions.
+- Use --n_jobs and --prefer_threads carefully depending on available memory and CPU resources.
 
 **Citation**
 
-If you use this code, please cite the associated manuscript.
+If you use this code, please cite our manuscript.
 
