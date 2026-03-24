@@ -60,9 +60,7 @@ pip install numpy pandas matplotlib scikit-learn shap statsmodels
 ```
 **Main processing steps**
 
-1 Data preparation
-    The script:
-    
+ 1. Data preparation    
     - loads the selected SNP list
     - keeps only SNPs present in the genotype matrix
     - merges genotype, phenotype, and covariates on the subject ID
@@ -148,34 +146,34 @@ outputs/chr16_rf_shap/
 
 **Output descriptions**
 
-chr<CHR>_prunedX.csv 
+- chr<CHR>_prunedX.csv 
     - LD-pruned SNP matrix used for main-effect Random Forest analysis.
   
-chr<CHR>_rf_importance_scores.csv
+- chr<CHR>_rf_importance_scores.csv
     - SNP importance table including SHAP importance and permutation importance.
   
-chr<CHR>_top_snps_shap.png
+- chr<CHR>_top_snps_shap.png
     - Bar plot of top SNPs ranked by SHAP importance.
   
-chr<CHR>_allinteractions.csv
+- chr<CHR>_allinteractions.csv
     - Full SNP-SNP interaction table from SHAP interaction values.
   
-chr<CHR>_top_interactions.png
+- chr<CHR>_top_interactions.png
     - Plot showing top interaction pairs and interaction-vs-main-effect comparison.
   
-chr<CHR>_allinteractions_filtered.csv
+- chr<CHR>_allinteractions_filtered.csv
     - Interaction table after distance and pairwise LD filtering.
   
-chr<CHR>_candidates_top<FRAC>.csv
+- chr<CHR>_candidates_top<FRAC>.csv
     - Final top-ranked candidate interaction pairs.
   
-chr<CHR>_covariate_model_summary.json
+- chr<CHR>_covariate_model_summary.json
     - Summary of the phenotype residualization model.
   
-chr<CHR>_run_summary.json
+- chr<CHR>_run_summary.json
     - Summary of the full run, including sample counts, SNP counts, model R² values, and candidate counts.
   
-chr<CHR>_missing_selected_snps.csv
+- chr<CHR>_missing_selected_snps.csv
     - Selected SNPs from the aggregated feature file that were not found in the genotype matrix.
 
 **Notes**
