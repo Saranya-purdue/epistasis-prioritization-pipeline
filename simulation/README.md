@@ -14,6 +14,7 @@ simulation/
 ├── simulate2.py
 └── run_simulation2.py
 
+```
 **Requirements**
 
 The code uses Python with:
