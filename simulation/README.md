@@ -33,7 +33,9 @@ pip install numpy pandas
 Both simulations expect a genotype matrix in CSV format:
 
 rows = individuals
+
 columns = SNPs
+
 values = genotype dosages or encoded genotype values
 
 Update the genotype path in the run scripts before executing:
@@ -66,6 +68,7 @@ This creates a strongly non-additive phenotype architecture.
 Simulation 1 evaluates the Cartesian product of:
 
 causal SNP counts: 15, 50, 100, 250
+
 overlap proportions: 0.3, 0.5, 0.7, 0.9
 
 This gives 16 simulation scenarios in total.
@@ -76,6 +79,7 @@ For each scenario:
 - num_epistatic = N
   
 the number of overlapping SNPs is defined as:
+
 n_overlap = floor(min(n_add, n_epi) × p_overlap)
 
 The epistatic component includes all pairwise interactions among the epistatic SNPs:
@@ -146,9 +150,13 @@ Simulation 2 generates quantitative phenotypes using a structured nonlinear arch
 
 N causal SNPs are randomly selected from the genotype matrix,
 the selected SNPs are partitioned into three subsets:
+
 s1
+
 s2
+
 s3
+
 - epistatic effects are generated only from cross-block interactions between SNPs in s1 and SNPs in s2,
 - marginal effects are generated from all selected causal SNPs (s1, s2, and s3),
 - the final phenotype is formed by summing the marginal component, the epistatic component, and Gaussian residual noise.
@@ -160,8 +168,11 @@ This simulation creates a nonlinear phenotype architecture while keeping interac
 Simulation 2 evaluates the following causal SNP counts:
 
 15
+
 50
+
 100
+
 250
 
 For each setting, the total broad-sense heritability is fixed at:
