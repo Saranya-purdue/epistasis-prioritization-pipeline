@@ -57,9 +57,9 @@ run_simulation2.py
 
 The current implementation uses:
 
--broad-sense heritability: H2 = 0.20
--additive variance proportion: rho = 0.05
--epistatic variance proportion: 1 - rho = 0.95
+- broad-sense heritability: H2 = 0.20
+- additive variance proportion: rho = 0.05
+- epistatic variance proportion: 1 - rho = 0.95
 
 This creates a strongly non-additive phenotype architecture.
 
@@ -151,11 +151,7 @@ Simulation 2 generates quantitative phenotypes using a structured nonlinear arch
 N causal SNPs are randomly selected from the genotype matrix,
 the selected SNPs are partitioned into three subsets:
 
-s1
-
-s2
-
-s3
+s1, s2, s3
 
 - epistatic effects are generated only from cross-block interactions between SNPs in s1 and SNPs in s2,
 - marginal effects are generated from all selected causal SNPs (s1, s2, and s3),
@@ -167,13 +163,7 @@ This simulation creates a nonlinear phenotype architecture while keeping interac
 
 Simulation 2 evaluates the following causal SNP counts:
 
-15
-
-50
-
-100
-
-250
+15, 50, 100, 250
 
 For each setting, the total broad-sense heritability is fixed at:
 
