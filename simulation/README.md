@@ -41,11 +41,11 @@ Update the genotype path in the run scripts before executing:
 run_simulation1.py
 run_simulation2.py
 ```
-**Simulation 1: Overlapping Additive and Epistatic Genetic Architecture**
+## Simulation 1: Overlapping Additive and Epistatic Genetic Architecture
 
-## Overview
+**Overview:**
 
-## For each simulation setting:
+**For each simulation setting:**
 
 - a set of additive causal SNPs and a set of epistatic causal SNPs are selected from the genotype matrix,
 - the two sets are allowed to overlap by a user-defined proportion,
@@ -53,27 +53,28 @@ run_simulation2.py
 - epistatic effects are generated from all pairwise multiplicative interactions among epistatic SNPs,
 - the final phenotype is formed by summing additive and epistatic components and adding Gaussian noise.
 
-## The current implementation uses:
+The current implementation uses:
 
-broad-sense heritability: H2 = 0.20
-additive variance proportion: rho = 0.05
-epistatic variance proportion: 1 - rho = 0.95
+-broad-sense heritability: H2 = 0.20
+-additive variance proportion: rho = 0.05
+-epistatic variance proportion: 1 - rho = 0.95
 
 This creates a strongly non-additive phenotype architecture.
 
 **Simulation design**
 
-## Simulation 1 evaluates the Cartesian product of:
+Simulation 1 evaluates the Cartesian product of:
 
 causal SNP counts: 15, 50, 100, 250
 overlap proportions: 0.3, 0.5, 0.7, 0.9
 
-## This gives 16 simulation scenarios in total.
+This gives 16 simulation scenarios in total.
 
-## For each scenario:
+For each scenario:
 
 - num_additive = N
 - num_epistatic = N
+  
 the number of overlapping SNPs is defined as:
 n_overlap = floor(min(n_add, n_epi) × p_overlap)
 
@@ -135,7 +136,7 @@ simulation1_outputs/
 - metadata.json — scenario-specific simulation metadata
 - simulation1_summary.csv — summary across all Simulation 1 scenarios
 
-**Simulation 2: Sparse Epistatic Architecture with Controlled Interaction Complexity**
+## Simulation 2: Sparse Epistatic Architecture with Controlled Interaction Complexity
 
 **Overview:**
 
@@ -156,7 +157,7 @@ This simulation creates a nonlinear phenotype architecture while keeping interac
 
 **Simulation design**
 
-**Simulation 2 evaluates the following causal SNP counts:**
+Simulation 2 evaluates the following causal SNP counts:
 
 15
 50
