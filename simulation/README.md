@@ -19,13 +19,17 @@ simulation/
 
 The code uses Python with:
 
+```text
 numpy
 pandas
+```
 
 Install with:
 
+```text
 pip install numpy pandas
 Input data
+```
 
 Both simulations expect a genotype matrix in CSV format:
 
@@ -34,10 +38,12 @@ columns = SNPs
 values = genotype dosages or encoded genotype values
 
 Update the genotype path in the run scripts before executing:
-
+```text
 run_simulation1.py
 run_simulation2.py
-Simulation 1: Overlapping Additive and Epistatic Genetic Architecture
+```
+**Simulation 1: Overlapping Additive and Epistatic Genetic Architecture**
+
 Overview
 
 For each simulation setting:
@@ -82,7 +88,8 @@ So the number of interaction terms is:
 50 SNPs → 1,225 pairs
 100 SNPs → 4,950 pairs
 250 SNPs → 31,125 pairs
-Files
+
+**Files**
 simulate1.py
 Contains the core Simulation 1 function:
 genotype standardization
@@ -94,16 +101,17 @@ Runs all Simulation 1 scenarios, saves outputs for each scenario, and creates a 
 How to run Simulation 1
 
 Update the genotype path in run_simulation1.py:
-
+```text
 GENOTYPE_PATH = "/path/to/your/genotype_matrix.csv"
-
+```
 Then run:
-
+```text
 python run_simulation1.py
+```
 Simulation 1 outputs
 
 Example output structure:
-
+```text
 simulation1_outputs/
 ├── sim1_n15_overlap0p3/
 │   ├── phenotype.csv
@@ -116,8 +124,8 @@ simulation1_outputs/
 ├── sim1_n15_overlap0p5/
 ├── ...
 └── simulation1_summary.csv
-
-Output files:
+```
+**Output files:**
 
 phenotype.csv — simulated phenotype and component values for each individual
 additive_snps.txt — SNPs included in the additive set
@@ -127,7 +135,9 @@ beta_add.csv — additive SNP effect sizes
 beta_epi.csv — epistatic SNP-pair effect sizes
 metadata.json — scenario-specific simulation metadata
 simulation1_summary.csv — summary across all Simulation 1 scenarios
-Simulation 2: Sparse Epistatic Architecture with Controlled Interaction Complexity
+
+**Simulation 2: Sparse Epistatic Architecture with Controlled Interaction Complexity**
+
 Overview
 
 Simulation 2 generates quantitative phenotypes using a structured nonlinear architecture in which epistatic effects arise only from interactions between two disjoint SNP subsets.
@@ -165,7 +175,8 @@ rho = 0.05
 The remaining variance is assigned to epistatic effects:
 
 1 - rho = 0.95
-Files
+
+**Files**
 simulate2.py
 Contains the core Simulation 2 function:
 causal SNP selection
@@ -178,16 +189,17 @@ Runs all Simulation 2 scenarios and saves outputs for each scenario.
 How to run Simulation 2
 
 Update the genotype path in run_simulation2.py:
-
+```text
 GENOTYPE_PATH = "/path/to/your/genotype_matrix.csv"
-
+```
 Then run:
-
+```text
 python run_simulation2.py
+```
 Simulation 2 outputs
 
 Example output structure:
-
+```text
 simulation2_outputs/
 ├── sim2_n15/
 │   ├── simulated_phenotype.csv
@@ -202,8 +214,9 @@ simulation2_outputs/
 ├── sim2_n100/
 ├── sim2_n250/
 └── simulation2_summary.csv
+```
 
-Output files:
+**Output files:**
 
 simulated_phenotype.csv — simulated phenotype and component values for each individual
 causal_snps.txt — full list of selected causal SNPs
@@ -212,20 +225,18 @@ beta_epistatic.csv — epistatic SNP-pair effect sizes
 beta_marginal.csv — marginal SNP effect sizes
 metadata.json — scenario-specific metadata, including subset sizes, number of interaction pairs, and realized variance components
 simulation2_summary.csv — summary across all Simulation 2 scenarios
-Notes
+
+
+**Notes**
 Genotypes are standardized before phenotype generation.
 Missing values are mean-imputed in Simulation 2 before standardization.
 Additive and epistatic components are rescaled to target the requested variance contributions.
 Different seeds can be used across scenarios for reproducibility.
 Simulation 1 uses all pairwise interactions among epistatic SNPs.
 Simulation 2 uses structured cross-block interactions only.
-Citation
+
+**Citation**
 
 If you use this code, please cite the associated manuscript.
 
 
-The two key rules are:
-- open a code block with ` ```text ` or ` ```bash `
-- close it with just ` ``` `
-
-Delete the old contents first, paste this fresh, and save.
