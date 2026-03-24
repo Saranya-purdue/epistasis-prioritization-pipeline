@@ -59,57 +59,43 @@ Install with:
 pip install numpy pandas matplotlib scikit-learn shap statsmodels
 ```
 **Main processing steps**
-1 Data preparation
 
-  The script:
-  
-  - loads the selected SNP list
-  - keeps only SNPs present in the genotype matrix
-  - merges genotype, phenotype, and covariates on the subject ID
-  - removes rows with missing phenotype or covariate values
+1 Data preparation
+    The script:
+    
+    - loads the selected SNP list
+    - keeps only SNPs present in the genotype matrix
+    - merges genotype, phenotype, and covariates on the subject ID
+    - removes rows with missing phenotype or covariate values
   
 2. Phenotype residualization
-
-  The phenotype is residualized using an ordinary least squares model with the supplied covariates.
+    - The phenotype is residualized using an ordinary least squares model with the supplied covariates.
 
 3. LD pruning
+    - The SNP matrix is greedily pruned using pairwise correlation squared:
+    - r^2 <= threshold, the default threshold is 0.7.
 
-  The SNP matrix is greedily pruned using pairwise correlation squared:
-  
-  r^2 <= threshold
-  
-  The default threshold is 0.7.
+5. Main-effect Random Forest
+    - A Random Forest regressor is tuned using randomized hyperparameter search and fitted to the residualized phenotype.
 
-4. Main-effect Random Forest
-
-  A Random Forest regressor is tuned using randomized hyperparameter search and fitted to the residualized phenotype.
-
-  The script then computes:
-
+    The script then computes:
     - SHAP importance
     - permutation importance
-
-  for all LD-pruned SNPs.
+    for all LD-pruned SNPs.
 
 5. Interaction-focused Random Forest
-
-  The top-ranked SNPs from the SHAP main-effect step are selected, and a second Random Forest model is trained for interaction detection.
-  
-  SHAP interaction values are then used to compute pairwise SNP-SNP interaction strength.
+    - The top-ranked SNPs from the SHAP main-effect step are selected, and a second Random Forest model is trained for interaction detection.
+    - SHAP interaction values are then used to compute pairwise SNP-SNP interaction strength.
 
 6. Candidate filtering
-
-  The interaction table can be filtered by:
-  
-  minimum physical distance between SNPs
-  pairwise LD threshold between SNPs in a candidate pair
-  
-  The top fraction of filtered pairs is saved as the final candidate set.
+    - The interaction table can be filtered by:
+    - minimum physical distance between SNPs
+    - pairwise LD threshold between SNPs in a candidate pair
+    - The top fraction of filtered pairs is saved as the final candidate set.
 
 How to run
 
 ```text
-
 python rf_shap_interactions.py \
   --aggregated_snps_csv path/to/aggregated_top_snps_chr16.csv \
   --genotype_csv path/to/chr16_ready.csv \
@@ -121,38 +107,27 @@ python rf_shap_interactions.py \
 
 Important arguments
 
---chromosome
-  Chromosome label used in output filenames.
+--chromosome - Chromosome label used in output filenames.
   
---id_col
-  Subject ID column name. Default: SUBJID
+--id_col - Subject ID column name. Default: SUBJID
   
---phenotype_col
-  Phenotype column name. Default: BMI
+--phenotype_col - Phenotype column name. Default: BMI
   
---aggregated_feature_col
-  Feature column in the aggregated SNP file. Default: Feature
+--aggregated_feature_col - Feature column in the aggregated SNP file. Default: Feature
   
---covariate_cols
-  Covariate columns used for residualization.
+--covariate_cols - Covariate columns used for residualization.
   
---ld_prune_r2
-  SNP LD-pruning threshold. Default: 0.7
+--ld_prune_r2 - SNP LD-pruning threshold. Default: 0.7
   
---top_k_snps
-  Number of top SNPs taken forward for interaction analysis. Default: 200
+--top_k_snps - Number of top SNPs taken forward for interaction analysis. Default: 200
   
---shap_interaction_max_samples
-  Maximum number of samples used for SHAP interaction values. Default: 500
+--shap_interaction_max_samples - Maximum number of samples used for SHAP interaction values. Default: 500
   
---min_distance_bp
-  Minimum physical distance between SNPs in a candidate pair. Default: 0
+--min_distance_bp - Minimum physical distance between SNPs in a candidate pair. Default: 0
   
---pair_ld_threshold
-  Correlation threshold used to filter SNP pairs. Default: 0.70
+--pair_ld_threshold - Correlation threshold used to filter SNP pairs. Default: 0.70
   
---top_frac
-  Top fraction of filtered interaction pairs to save. Default: 0.01
+--top_frac - Top fraction of filtered interaction pairs to save. Default: 0.01
 
 **Output files**
 
@@ -173,48 +148,45 @@ outputs/chr16_rf_shap/
 
 **Output descriptions**
 
-chr<CHR>_prunedX.csv
-  LD-pruned SNP matrix used for main-effect Random Forest analysis.
+chr<CHR>_prunedX.csv 
+    - LD-pruned SNP matrix used for main-effect Random Forest analysis.
   
 chr<CHR>_rf_importance_scores.csv
-  SNP importance table including SHAP importance and permutation importance.
+    - SNP importance table including SHAP importance and permutation importance.
   
 chr<CHR>_top_snps_shap.png
-  Bar plot of top SNPs ranked by SHAP importance.
+    - Bar plot of top SNPs ranked by SHAP importance.
   
 chr<CHR>_allinteractions.csv
-  Full SNP-SNP interaction table from SHAP interaction values.
+    - Full SNP-SNP interaction table from SHAP interaction values.
   
 chr<CHR>_top_interactions.png
-  Plot showing top interaction pairs and interaction-vs-main-effect comparison.
+    - Plot showing top interaction pairs and interaction-vs-main-effect comparison.
   
 chr<CHR>_allinteractions_filtered.csv
-  Interaction table after distance and pairwise LD filtering.
+    - Interaction table after distance and pairwise LD filtering.
   
 chr<CHR>_candidates_top<FRAC>.csv
-  Final top-ranked candidate interaction pairs.
+    - Final top-ranked candidate interaction pairs.
   
 chr<CHR>_covariate_model_summary.json
-  Summary of the phenotype residualization model.
+    - Summary of the phenotype residualization model.
   
 chr<CHR>_run_summary.json
-  Summary of the full run, including sample counts, SNP counts, model R² values, and candidate counts.
+    - Summary of the full run, including sample counts, SNP counts, model R² values, and candidate counts.
   
 chr<CHR>_missing_selected_snps.csv
-  Selected SNPs from the aggregated feature file that were not found in the genotype matrix.
+    - Selected SNPs from the aggregated feature file that were not found in the genotype matrix.
 
 **Notes**
 
-This module is chromosome-agnostic and can be used for any chromosome by changing the input files and the --chromosome argument.
-
-SHAP interaction values can be computationally expensive for large SNP sets.
-
-If memory becomes limiting, reduce:
-  --top_k_snps
-  --shap_interaction_max_samples
-The distance filter assumes SNP names follow a chr:position or chromosome:position pattern if physical position filtering is used.
-
-The script uses SHAP importance for ranking SNPs before interaction analysis.
+- This module is chromosome-agnostic and can be used for any chromosome by changing the input files and the --chromosome argument.
+- SHAP interaction values can be computationally expensive for large SNP sets.
+- If memory becomes limiting, reduce:
+    - --top_k_snps
+    - --shap_interaction_max_samples
+- The distance filter assumes SNP names follow a chr:position or chromosome:position pattern if physical position filtering is used.
+- The script uses SHAP importance for ranking SNPs before interaction analysis.
 
 **Citation**
 
