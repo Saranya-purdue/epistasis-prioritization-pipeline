@@ -1,13 +1,13 @@
 # Genetic Architecture Simulation Framework
 
-This repository contains code for two phenotype simulation settings designed to evaluate methods under additive and epistatic genetic architectures.
+This module contains code for two phenotype simulation settings designed to evaluate methods under additive and epistatic genetic architectures.
 
 The simulations generate quantitative phenotypes from genotype matrices under controlled heritability, varying causal SNP complexity, and different nonlinear interaction structures.
 
-## Repository structure
+## Module structure
 
-text
-.
+```text
+simulation/
 ├── README.md
 ├── simulate1.py
 ├── run_simulation1.py
@@ -22,9 +22,8 @@ numpy
 pandas
 
 Install with:
+
 pip install numpy pandas
-
-
 Input data
 
 Both simulations expect a genotype matrix in CSV format:
@@ -39,70 +38,59 @@ run_simulation1.py
 run_simulation2.py
 
 Simulation 1: Overlapping Additive and Epistatic Genetic Architecture
-
-## Overview
+Overview
 
 For each simulation setting:
 
-- a set of additive causal SNPs and a set of epistatic causal SNPs are selected from the genotype matrix,
-- the two sets are allowed to overlap by a user-defined proportion,
-- additive effects are generated as a linear combination of additive SNP genotypes,
-- epistatic effects are generated from **all pairwise multiplicative interactions** among epistatic SNPs,
-- the final phenotype is formed by summing additive and epistatic components and adding Gaussian noise.
+a set of additive causal SNPs and a set of epistatic causal SNPs are selected from the genotype matrix,
+the two sets are allowed to overlap by a user-defined proportion,
+additive effects are generated as a linear combination of additive SNP genotypes,
+epistatic effects are generated from all pairwise multiplicative interactions among epistatic SNPs,
+the final phenotype is formed by summing additive and epistatic components and adding Gaussian noise.
 
 The current implementation uses:
 
-- **broad-sense heritability**: 'H2 = 0.20'
-- **additive variance proportion**: 'rho = 0.05'
-- **epistatic variance proportion**: '1 - rho = 0.95'
+broad-sense heritability: H2 = 0.20
+additive variance proportion: rho = 0.05
+epistatic variance proportion: 1 - rho = 0.95
 
 This creates a strongly non-additive phenotype architecture.
 
-## Simulation design
+Simulation design
 
 Simulation 1 evaluates the Cartesian product of:
 
-- **causal SNP counts**: '15, 50, 100, 250'
-- **overlap proportions**: '0.3, 0.5, 0.7, 0.9'
+causal SNP counts: 15, 50, 100, 250
+overlap proportions: 0.3, 0.5, 0.7, 0.9
 
-This gives **16 simulation scenarios** in total.
+This gives 16 simulation scenarios in total.
 
 For each scenario:
 
-- 'num_additive = N'
-- 'num_epistatic = N'
-- the number of overlapping SNPs is:
+num_additive = N
+num_epistatic = N
+the number of overlapping SNPs is defined as:
+n_overlap = floor(min(n_add, n_epi) × p_overlap)
 
-\[
-n_{overlap} = \lfloor \min(n_{add}, n_{epi}) \times p_{overlap} \rfloor
-\]
+The epistatic component includes all pairwise interactions among the epistatic SNPs:
 
-The epistatic component includes **all pairwise interactions** among the epistatic SNPs:
-
-\[
-K = \binom{n_{epi}}{2} = \frac{n_{epi}(n_{epi}-1)}{2}
-\]
+K = n_epi × (n_epi - 1) / 2
 
 So the number of interaction terms is:
 
-- '15 SNPs' → '105 pairs'
-- '50 SNPs' → '1,225 pairs'
-- '100 SNPs' → '4,950 pairs'
-- '250 SNPs' → '31,125 pairs
-
-## Files
-
-- 'simulate1.py'  
-  Contains the core simulation 1 function:
-  - genotype standardization
-  - selection of overlapping additive and epistatic SNP sets
-  - phenotype generation
-  - variance rescaling for additive and epistatic components
-
-- 'run_simulation1.py'  
-  Runs all Simulation 1 scenarios, saves outputs for each scenario, and creates a summary table.
-
-
+15 SNPs → 105 pairs
+50 SNPs → 1,225 pairs
+100 SNPs → 4,950 pairs
+250 SNPs → 31,125 pairs
+Files
+simulate1.py
+Contains the core Simulation 1 function:
+genotype standardization
+selection of overlapping additive and epistatic SNP sets
+phenotype generation
+variance rescaling for additive and epistatic components
+run_simulation1.py
+Runs all Simulation 1 scenarios, saves outputs for each scenario, and creates a summary table.
 How to run Simulation 1
 
 Update the genotype path in run_simulation1.py:
@@ -110,10 +98,12 @@ Update the genotype path in run_simulation1.py:
 GENOTYPE_PATH = "/path/to/your/genotype_matrix.csv"
 
 Then run:
-python run_simulation1.py
 
+python run_simulation1.py
 Simulation 1 outputs
+
 Example output structure:
+
 simulation1_outputs/
 ├── sim1_n15_overlap0p3/
 │   ├── phenotype.csv
@@ -127,7 +117,6 @@ simulation1_outputs/
 ├── ...
 └── simulation1_summary.csv
 
-
 Output files:
 
 phenotype.csv — simulated phenotype and component values for each individual
@@ -138,9 +127,7 @@ beta_add.csv — additive SNP effect sizes
 beta_epi.csv — epistatic SNP-pair effect sizes
 metadata.json — scenario-specific simulation metadata
 simulation1_summary.csv — summary across all Simulation 1 scenarios
-
 Simulation 2: Sparse Epistatic Architecture with Controlled Interaction Complexity
-
 Overview
 
 Simulation 2 generates quantitative phenotypes using a structured nonlinear architecture in which epistatic effects arise only from interactions between two disjoint SNP subsets.
@@ -178,7 +165,6 @@ rho = 0.05
 The remaining variance is assigned to epistatic effects:
 
 1 - rho = 0.95
-
 Files
 simulate2.py
 Contains the core Simulation 2 function:
@@ -189,7 +175,6 @@ generation of marginal and epistatic phenotype components
 variance rescaling to match the target heritability settings
 run_simulation2.py
 Runs all Simulation 2 scenarios and saves outputs for each scenario.
-
 How to run Simulation 2
 
 Update the genotype path in run_simulation2.py:
@@ -227,7 +212,6 @@ beta_epistatic.csv — epistatic SNP-pair effect sizes
 beta_marginal.csv — marginal SNP effect sizes
 metadata.json — scenario-specific metadata, including subset sizes, number of interaction pairs, and realized variance components
 simulation2_summary.csv — summary across all Simulation 2 scenarios
-
 Notes
 Genotypes are standardized before phenotype generation.
 Missing values are mean-imputed in Simulation 2 before standardization.
