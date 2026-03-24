@@ -33,7 +33,9 @@ The code uses Python with:
 
 Install with:
 
+```text
 pip install numpy pandas matplotlib tensorflow scikit-learn umap-learn shap joblib
+```
 
 Input data
 
@@ -41,7 +43,7 @@ The module expects an input CSV file with:
 
 rows = samples
 
-columns = features or SNPs
+columns = SNPs
 
 Example:
 
@@ -81,6 +83,7 @@ outputs/vae_run/
 ├── latent_umap.png
 └── run_summary.json
 ```
+
 **Output files:**
 
 - latent_space.csv — latent representation for each sample
@@ -120,6 +123,7 @@ python latent_shap_ranking.py \
   --normalize_input \
   --prefer_threads
 ```
+
 **Main outputs:**
 
 ```text
