@@ -123,22 +123,31 @@ outputs/pathway_enrichment/
 
 --intra_pairs_csv
     - Annotated intra-chromosomal pair file
+
 --inter_pairs_csv
     - Annotated inter-chromosomal pair file
+
 --class_col
     - Column used for class splitting, default: class
+
 --classes
     - Classes to analyze separately
+
 --gwas_tsv_path
     - Optional external GWAS gene TSV
+
 --gwas_gene_col
     - Gene column in the GWAS TSV, default: gene
+
 --gene_set_libraries
     - Enrichr libraries to query
+
 --string_score_threshold
     - Minimum STRING score, default: 400
+
 --top_n_enrichr
     - Number of terms saved per library, default: 20
+
 --top_n_plot
     - Number of terms shown in the plot, default: 10
 
