@@ -82,9 +82,11 @@ This file contains:
 The downstream 3P rule pipeline uses the additive test results from this file.
 
 **Notes**
+
 - MAF filtering and other genotype QC steps should be completed before this GWAS step.
 - This module performs only marginal GWAS, not interaction testing.
 - The resulting GWAS p-values are mapped later onto SNPs within candidate SNP-SNP pairs.
 
 **Citation**
+
 If you use this code, please cite our manuscript.
