@@ -1,1 +1,23 @@
-
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below."
+title: "Exploring epistasis in human genome-wide data using a two-stage representation-learning framework"
+type: software
+authors:
+  - family-names: "Arirangan"
+    given-names: "Saranya"
+repository-code: "https://github.com/Saranya-purdue/epistasis-prioritization-pipeline"
+url: "https://github.com/Saranya-purdue/epistasis-prioritization-pipeline"
+abstract: >
+  Code for a two-stage framework to prioritize epistatic SNP-SNP interactions
+  using VAE-based candidate selection, Random Forest with SHAP interaction
+  ranking, a 3P evidence rule, and downstream biological follow-up analyses.
+keywords:
+  - epistasis
+  - GWAS
+  - SHAP
+  - random forest
+  - variational autoencoder
+  - SNP-SNP interaction
+license: "MIT"
+version: "0.1.0"
+date-released: 2026-03-24
