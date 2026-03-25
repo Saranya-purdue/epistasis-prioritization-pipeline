@@ -63,7 +63,7 @@ The codebase is structured into separate modules so that each stage of the pipel
 - It includes:
 
     - Simulation 1: overlapping additive and epistatic SNP sets with all pairwise interactions
-    - Simulation 2: structured cross-block epistatic architecture with controlled interaction complexity
+    - Simulation 2: Sparse Epistatic Architecture with Controlled Interaction Complexity
 2. VAE latent space preparation
 
 - The vae_latent_preparation/ module trains a variational autoencoder on genotype or feature matrices and exports latent representations.
