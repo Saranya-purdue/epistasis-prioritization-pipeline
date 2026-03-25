@@ -21,7 +21,6 @@ The codebase is structured into separate modules so that each stage of the pipel
 ## Repository structure
 
 ```text
-.
 ├── README.md
 ├── simulation/
 │   ├── README.md
