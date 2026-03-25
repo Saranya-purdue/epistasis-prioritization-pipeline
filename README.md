@@ -160,6 +160,7 @@ A typical analysis flow is:
 - run pathway enrichment and interaction-network analysis
 
 **Reproducibility notes**
+
 - The repository is organized so each module can be run independently with explicit file inputs and outputs.
 - Each module has its own README.md describing:
     - required inputs
@@ -168,13 +169,16 @@ A typical analysis flow is:
     - assumptions and notes
 
 **Notes**
+
 This repository is intended for research and manuscript reproducibility.
 Some steps depend on external resources or tools, such as:
 - PLINK2
 - FUMA SNP2GENE
 - Enrichr
 - STRING
+
 Upstream genotype QC and filtering are assumed to have been completed before GWAS and downstream prioritization steps.
+
 **Citation**
 
 If you use this code, please cite our manuscript.
