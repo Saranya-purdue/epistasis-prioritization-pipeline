@@ -1,0 +1,84 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Extension modules
+*.so
+
+# Distribution / packaging
+.Python
+build/
+dist/
+downloads/
+.eggs/
+*.egg-info/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage
+.coverage
+.coverage.*
+.pytest_cache/
+htmlcov/
+.tox/
+.nox/
+
+# Type checker / lint caches
+.mypy_cache/
+.pyre/
+.pytype/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+profile_default/
+ipython_config.py
+
+# Logs
+*.log
+
+# Local config / secrets
+.env
+.env.*
+*.secret
+*.key
+*.pem
+
+# Analysis outputs
+results/
+outputs/
+figures/
+plots/
+reports/
+tmp/
+temp/
+
+# Large data files
+data/
+*.npy
+*.npz
+*.pkl
+*.joblib
+*.feather
+*.parquet
+
+# Compressed archives
+*.zip
+*.tar
+*.gz
+
+# PDFs generated during analysis
+*.aux
+*.out
+*.toc
