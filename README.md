@@ -1,4 +1,4 @@
-# Two-Stage Framework for Epistasis SNP-SNP Prioritization
+# Exploring epistasis in human genome-wide data using a two-stage representation-learning framework
 
 This repository contains code for a two-stage framework to prioritize epistatic SNP-SNP interactions without exhaustive enumeration.
 
