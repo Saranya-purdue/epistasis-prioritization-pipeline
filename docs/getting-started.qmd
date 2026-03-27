@@ -1,0 +1,60 @@
+---
+title: "Getting started"
+---
+
+## Repository structure
+
+```text
+repo/
+├── README.md
+├── simulation/
+├── vae_latent_preparation/
+├── random_forest_shap/
+├── gwas/
+├── three_p_rule/
+├── variance_computation/
+├── deviation_from_additivity/
+├── fuma_analysis/
+└── pathway_enrichment/
+```
+
+## Software requirements
+
+Different modules use different software environments.
+
+**Common Python dependencies include:**
+
+- numpy
+- pandas
+- matplotlib
+- scikit-learn
+- statsmodels
+- shap
+- tensorflow
+- umap-learn
+- requests
+- tqdm
+
+**External tools used in the workflow include:**
+
+- PLINK2
+- FUMA SNP2GENE
+- Enrichr
+- STRING
+**General workflow**
+
+A typical run order is:
+
+- Prepare simulation data or real genotype inputs
+- Train the VAE and export latent space
+- Rank SNPs using SHAP across latent dimensions
+- Run Random Forest and SHAP interaction ranking
+- Run marginal GWAS with PLINK2
+- Apply the 3P rule
+- Compute incremental variance explained
+- Visualize deviation from additivity
+- Map prioritized SNPs to genes using FUMA
+- Run pathway enrichment and network analysis
+**Notes**
+
+This tutorial assumes that genotype QC and filtering were performed before the main analysis pipeline.
