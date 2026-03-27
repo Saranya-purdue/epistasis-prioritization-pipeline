@@ -1,1 +1,24 @@
+project:
+  type: website
+  output-dir: _site
 
+website:
+  title: "Epistasis SNP-SNP Prioritization Pipeline"
+  sidebar:
+    style: docked
+    search: true
+    contents:
+      - href: index.qmd
+        text: Home
+      - href: getting-started.qmd
+        text: Getting started
+      - href: pipeline-overview.qmd
+        text: Pipeline overview
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    number-sections: true
+    code-copy: true
+    code-overflow: wrap
