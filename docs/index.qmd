@@ -1,1 +1,47 @@
+---
+title: "Epistasis SNP-SNP Prioritization Pipeline"
+author: "Saranya Arirangan"
+date: today
+---
 
+## Overview
+
+This website documents a two-stage framework for prioritizing epistatic SNP-SNP interactions without exhaustive enumeration.
+
+The pipeline combines:
+
+1. Variational autoencoder (VAE) latent space learning  
+2. SHAP-based SNP prioritization  
+3. Random Forest interaction ranking  
+4. Marginal GWAS support  
+5. A Predictive-Marginal-Parametric (3P) rule  
+6. Downstream interpretation and biological follow-up analyses  
+
+## Goal
+
+The goal of this tutorial is to provide a clear, reproducible guide for running the full pipeline and understanding the logic behind each module.
+
+## Main modules
+
+The repository currently includes:
+
+- Simulation
+- VAE latent space preparation
+- Random Forest with SHAP interaction ranking
+- GWAS with PLINK2
+- 3P rule classification
+- Variance computation
+- Deviation from additivity
+- FUMA analysis
+- Pathway enrichment analysis
+
+## Tutorial structure
+
+Use the sidebar to navigate the documentation.
+
+The next pages will describe:
+
+- how the repository is organized
+- what each module does
+- what inputs and outputs are required
+- how the modules connect across the full workflow
