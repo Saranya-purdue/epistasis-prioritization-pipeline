@@ -2,46 +2,475 @@
 title: "Epistasis SNP-SNP Prioritization Pipeline"
 author: "Saranya Arirangan"
 date: today
+format:
+  html:
+    toc: true
+    number-sections: true
+    code-copy: true
 ---
 
 ## Overview
 
-This website documents a two-stage framework for prioritizing epistatic SNP-SNP interactions without exhaustive enumeration.
+This tutorial describes a two-stage framework for prioritizing epistatic SNP-SNP interactions without exhaustive enumeration.
 
 The pipeline combines:
 
-1. Variational autoencoder (VAE) latent space learning  
-2. SHAP-based SNP prioritization  
-3. Random Forest interaction ranking  
-4. Marginal GWAS support  
-5. A Predictive-Marginal-Parametric (3P) rule  
-6. Downstream interpretation and biological follow-up analyses  
+1. phenotype simulation for benchmarking
+2. chromosome-wise VAE latent space learning
+3. SHAP-based SNP candidate selection
+4. Random Forest and SHAP interaction ranking
+5. marginal GWAS with PLINK2
+6. 3P rule classification
+7. variance contribution analysis
+8. deviation-from-additivity analysis
+9. FUMA SNP-to-gene mapping
+10. pathway enrichment and interaction-network follow-up
 
-## Goal
+The repository is organized so that each stage can be run independently with explicit inputs and outputs.
 
-The goal of this tutorial is to provide a clear, reproducible guide for running the full pipeline and understanding the logic behind each module.
+## Repository structure
 
-## Main modules
+```text
+repo/
+├── simulation/
+│   ├── simulate1.py
+│   ├── run_simulation1.py
+│   ├── simulate2.py
+│   └── run_simulation2.py
+├── vae_latent_preparation/
+│   ├── vae_latent_preparation.py
+│   └── latent_shap_ranking.py
+├── random_forest_shap/
+│   └── rf_shap_interactions.py
+├── gwas/
+│   └── run_gwas_plink.sh
+├── three_p_rule/
+│   └── three_p_rule_pipeline.py
+├── variance_computation/
+│   └── variance_computation.py
+├── deviation_from_additivity/
+│   └── deviation_from_additivity.py
+├── fuma_analysis/
+│   └── fuma_analysis.py
+└── pathway_enrichment/
+    └── pathway_enrichment_analysis.py
+```
+## Input assumptions
 
-The repository currently includes:
+**This tutorial assumes:**
 
-- Simulation
-- VAE latent space preparation
-- Random Forest with SHAP interaction ranking
-- GWAS with PLINK2
-- 3P rule classification
-- Variance computation
-- Deviation from additivity
-- FUMA analysis
-- Pathway enrichment analysis
+- genotype QC has already been completed
+- MAF filtering and related SNP-level QC have already been applied before downstream analysis
+- phenotype and covariate files are prepared with a shared sample ID column
+- genotype files are available either:
+- as per-chromosome CSV matrices for the Python steps, or
+- as PLINK binary files for the GWAS step
+- SNP names follow a parseable format such as:
+```text
+chr16:12345:rs123:A:G
+```
+## Software requirements
+**Python packages**
 
-## Tutorial structure
+Common Python dependencies across modules:
 
-Use the sidebar to navigate the documentation.
+```text
+pip install numpy pandas matplotlib scikit-learn statsmodels tensorflow umap-learn shap joblib requests tqdm
+```
+**External tools**
 
-The next pages will describe:
+The full pipeline also uses:
 
-- how the repository is organized
-- what each module does
-- what inputs and outputs are required
-- how the modules connect across the full workflow
+- plink2
+- FUMA SNP2GENE
+- Enrichr
+- STRING
+
+**General workflow**
+
+The main analysis flow is:
+
+- prepare simulation data or real genotype inputs
+- train the VAE and export latent space
+- rank SNPs using SHAP across latent dimensions
+- rank SNPs and SNP-SNP interactions using Random Forest + SHAP
+- run marginal GWAS with PLINK2
+- apply the 3P rule
+- compute incremental variance explained by interaction terms
+- visualize deviation from additivity
+- map prioritized SNPs to genes using FUMA
+- run pathway enrichment and interaction-network analysis
+
+## 1. Simulation
+
+The simulation/ module contains two simulation settings for benchmarking the pipeline under controlled additive and epistatic architectures.
+
+**Simulation 1 **
+
+Simulation 1 uses:
+
+- overlapping additive and epistatic SNP sets
+- all pairwise interactions among epistatic SNPs
+- varying overlap proportions
+- fixed broad-sense heritability and additive/epistatic variance split
+
+Run:
+```text
+python simulation/run_simulation1.py
+```
+**Simulation 2**
+
+Simulation 2 uses:
+
+a structured cross-block interaction design
+controlled interaction complexity
+separate marginal and epistatic components
+
+Run:
+```text
+python simulation/run_simulation2.py
+```
+**Typical outputs**
+
+Simulation outputs include:
+
+- phenotype tables
+- additive SNP lists
+- epistatic SNP lists
+- interaction-pair effect tables
+- metadata summaries
+
+## 2. VAE latent space preparation
+
+** The vae_latent_preparation/ module has two parts:**
+
+- train the VAE and export latent space
+- rank original SNPs/features for each latent dimension using Random Forest + SHAP
+**Step 2.1: Train VAE and export latent space**
+
+Run:
+```text
+python vae_latent_preparation/vae_latent_preparation.py \
+  --input_csv path/to/input_features.csv \
+  --output_dir outputs/vae_run \
+  --latent_dim 250 \
+  --epochs 50 \
+  --batch_size 128
+```
+**Main outputs:**
+
+- latent_space.csv
+- training_losses.png
+- reconstruction_error_hist.png
+- latent_umap.png
+- run_summary.json
+
+**Step 2.2: Rank original SNPs/features by latent dimension**
+
+Run:
+```text
+python vae_latent_preparation/latent_shap_ranking.py \
+  --input_csv path/to/input_features.csv \
+  --latent_csv outputs/vae_run/latent_space.csv \
+  --output_dir outputs/vae_shap \
+  --top_k 100 \
+  --prefer_threads
+```
+**Main outputs:**
+
+- latent_i_top_features.csv
+- latent_i_shap_barplot.png
+- aggregated_top_snps.csv
+
+The aggregated SNP list is used as input for the Random Forest interaction-ranking step.
+
+## 3. Random Forest with SHAP interaction ranking
+
+**The random_forest_shap/ module performs:**
+
+- candidate SNP loading from the upstream latent-space ranking
+- genotype/phenotype/covariate merging
+- phenotype residualization using covariates
+- LD pruning
+- Random Forest tuning
+- SHAP-based SNP ranking
+- SHAP interaction-based SNP-pair ranking
+- candidate pair filtering
+
+Run:
+```text
+python random_forest_shap/rf_shap_interactions.py \
+  --aggregated_snps_csv path/to/aggregated_top_snps_chr16.csv \
+  --genotype_csv path/to/chr16_ready.csv \
+  --phenotype_csv path/to/BMI_chr16.csv \
+  --covariates_csv path/to/covariates_chr16.csv \
+  --output_dir outputs/chr16_rf_shap \
+  --chromosome 16
+```
+**Main outputs:**
+
+- chr16_prunedX.csv
+- chr16_rf_importance_scores.csv
+- chr16_top_snps_shap.png
+- chr16_allinteractions.csv
+- chr16_allinteractions_filtered.csv
+- chr16_candidates_top0.010.csv
+- chr16_run_summary.json
+
+These candidate pair files are the predictive component used later in the 3P rule.
+
+##4. Marginal GWAS with PLINK2
+
+The gwas/ module runs single-SNP marginal association analysis for BMI using PLINK2.
+
+This step provides marginal GWAS evidence for at least one SNP in a pair.
+
+Edit the paths in gwas/run_gwas_plink.sh, then run:
+
+bash gwas/run_gwas_plink.sh
+
+The core PLINK command is:
+```text
+plink2 \
+  --bfile path/to/genotype_prefix \
+  --pheno path/to/bmi_pheno_for_plink.txt \
+  --pheno-name BMI \
+  --covar path/to/bmi_covariates_for_plink.txt \
+  --covar-name age_at_bmi,sex_M,PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10 \
+  --covar-variance-standardize \
+  --glm hide-covar \
+  --out path/to/gwas_bmi_full
+```
+The key downstream file is:
+
+gwas_bmi_full.BMI.glm.linear
+
+Only additive GWAS rows are used downstream.
+
+##5. 3P rule classification
+
+**The three_p_rule/ module integrates three evidence sources:**
+
+- P1: predictive support from RF + SHAP interaction strength
+- P2: marginal GWAS support
+- P3: parametric support from a linear SNP×SNP interaction model
+
+The linear model fitted per pair is:
+
+phenotype ~ covariates + SNP1 + SNP2 + SNP1xSNP2
+
+Run:
+```text
+python three_p_rule/three_p_rule_pipeline.py \
+  --pairs_dir path/to/chr_results/clean_setup \
+  --genotype_dir path/to/genotype_ready \
+  --phenotype_csv path/to/BMI_Whites_all.csv \
+  --covariates_csv path/to/covariates_all.csv \
+  --gwas_glm_file path/to/gwas_bmi_full.BMI.glm.linear \
+  --output_dir outputs/three_p_rule \
+  --id_col SUBJID \
+  --phenotype_col BMI \
+  --gwas_mode min_p \
+  --gwas_threshold 0.05 \
+  --interaction_mode nominal_p \
+  --interaction_threshold 0.05
+```
+**3P classes**
+
+The final retained SNP pairs are classified into evidence-based groups such as:
+
+- ML + GWAS + INT
+- ML + GWAS
+- ML + INT
+
+** Main outputs:**
+
+- parsed_gwas_additive.csv
+- chr*_pairs_with_gwas_and_linear.csv
+- allchr_pairs_with_gwas_and_linear.csv
+- allchr_pairs_3P_filtered.csv
+- three_p_class_counts.png
+- three_p_run_summary.json
+## 6. Variance computation
+
+The variance_computation/ module quantifies how much variance is added by the interaction term beyond main effects and covariates.
+
+**For each SNP pair, it compares:**
+
+- Base model
+    - phenotype ~ covariates + SNP1 + SNP2
+- Full model
+    - phenotype ~ covariates + SNP1 + SNP2 + SNP1×SNP2
+
+It then computes:
+
+ΔR² = R²(full) - R²(base)
+
+using cross-validation.
+
+Run:
+```text
+python variance_computation/variance_computation.py \
+  --pairs_csv path/to/allchr_pairs_3P_filtered.csv \
+  --genotype_dir path/to/genotype_ready \
+  --phenotype_csv path/to/BMI_Whites_all.csv \
+  --covariates_csv path/to/covariates_all.csv \
+  --output_dir outputs/variance_computation
+```
+**Main outputs:**
+
+- pairwise_delta_r2.csv
+- delta_r2_by_class_summary.csv
+- delta_r2_pairs.png
+- delta_r2_distribution.png
+- delta_r2_by_class.png
+- variance_run_summary.json
+
+The same analysis is applied consistently across the retained 3P classes.
+
+## 7. Deviation from additivity
+
+The deviation_from_additivity/ module visualizes how selected SNP pairs deviate from an additive expectation.
+
+**For each pair:**
+
+compute observed phenotype means across the 3×3 genotype grid
+
+fit an additive-only model:
+
+y ~ g1 + g2
+
+- compute the expected additive surface
+- calculate residual deviation from additivity
+- rank pairs by the maximum absolute residual in sufficiently powered genotype cells
+- plot top intra- and inter-chromosomal examples
+
+Run:
+```text
+python deviation_from_additivity/deviation_from_additivity.py \
+  --genotype_csv path/to/X_pruned.csv \
+  --phenotype_csv path/to/BMI_Whites_all.csv \
+  --intra_pairs_csv path/to/intra_pairs.csv \
+  --inter_pairs_csv path/to/inter_pairs.csv \
+  --output_dir outputs/deviation_from_additivity \
+  --pair_class "ML + GWAS + INT" \
+  --min_cell_n 50 \
+  --min_powered_cells 9 \
+  --top_k 3
+```
+**Main outputs:**
+
+- intra_pairs_with_deviation_metrics.csv
+- inter_pairs_with_deviation_metrics.csv
+- selected_intra_pairs.csv
+- selected_inter_pairs.csv
+- deviation_from_additivity_figure.pdf
+- deviation_from_additivity_figure.png
+- deviation_from_additivity_summary.json
+## 8. FUMA SNP2GENE analysis
+
+**The fuma_analysis/ module is used in two steps:**
+
+- prepare a lead SNP file for FUMA upload
+- annotate the final SNP pairs with nearby-gene information from FUMA output
+**Step 8.1: Prepare lead SNPs**
+
+Run:
+```text
+python fuma_analysis/fuma_analysis.py prepare-leads \
+  --pairs_csv path/to/allchr_pairs_3P_filtered.csv \
+  --output_dir outputs/fuma_analysis
+```
+This writes a tab-delimited file with:
+
+- rsID
+- chr
+- pos
+
+Upload that file to FUMA SNP2GENE.
+
+**Step 8.2: Annotate SNP pairs with FUMA output**
+
+After downloading FUMA snps.txt, run:
+```text
+python fuma_analysis/fuma_analysis.py annotate-pairs \
+  --pairs_csv path/to/allchr_pairs_3P_filtered.csv \
+  --fuma_snps_file path/to/snps.txt \
+  --output_dir outputs/fuma_analysis
+```
+**Main outputs:**
+
+- fuma_predefined_lead_snps.txt
+- pairs_with_fuma_genes.csv
+- summary JSON files
+## 9. Pathway enrichment analysis
+
+The pathway_enrichment/ module performs biological follow-up analysis on SNP-pair results that have already been mapped to genes.
+
+It is designed to run the same workflow across:
+
+- the three 3P classes
+- intra-chromosomal pairs
+- inter-chromosomal pairs
+
+For each subset, it:
+
+- extracts unique genes and gene pairs
+- runs Enrichr pathway enrichment
+- queries STRING for protein-protein interaction support
+- optionally overlaps genes with an external GWAS gene TSV
+
+Run:
+```text
+python pathway_enrichment/pathway_enrichment_analysis.py \
+  --intra_pairs_csv path/to/intra_pairs_with_fuma_genes.csv \
+  --inter_pairs_csv path/to/inter_pairs_with_fuma_genes.csv \
+  --output_dir outputs/pathway_enrichment \
+  --gwas_tsv_path path/to/bmi_genes_gwas_catalog.csv
+```
+To also analyze the full intra/inter tables in addition to class-specific subsets:
+```text
+python pathway_enrichment/pathway_enrichment_analysis.py \
+  --intra_pairs_csv path/to/intra_pairs_with_fuma_genes.csv \
+  --inter_pairs_csv path/to/inter_pairs_with_fuma_genes.csv \
+  --output_dir outputs/pathway_enrichment \
+  --gwas_tsv_path path/to/bmi_genes_gwas_catalog.csv \
+  --run_all_rows
+```
+**Main outputs per subset include:**
+```text
+- pathway_enrichment.csv
+- enrichment_plot.png
+- string_interactions.csv
+- gene_pair_interactions.csv
+- gwas_catalog_genes_from_tsv.csv
+- analysis_summary.csv
+
+Across all subsets:
+
+- master_analysis_summary.csv
+- Suggested end-to-end run order
+
+For real data, a typical run order is:
+
+1. VAE latent space preparation
+2. Latent-space SHAP ranking
+3. Random Forest + SHAP interaction ranking
+4. PLINK2 marginal GWAS
+5. 3P rule classification
+6. Variance computation
+7. Deviation from additivity
+8. FUMA SNP2GENE mapping
+9. Pathway enrichment analysis
+
+For simulation benchmarking, run the simulation module first and then adapt the remaining steps as needed.
+
+**Reproducibility notes**
+- Each module is written as a standalone script with explicit file inputs and outputs.
+- Module-level README.md files provide more detailed input/output documentation.
+- Upstream genotype QC is assumed to be complete before GWAS and downstream prioritization.
+- External web-based resources such as FUMA, Enrichr, and STRING are used only in the annotation and interpretation stages.
+
+**Citation**
+
+If you use this code, please cite our manuscript.
