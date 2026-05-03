@@ -31,7 +31,8 @@ The codebase is structured into separate modules so that each stage of the pipel
 ├── vae_latent_preparation/
 │   ├── README.md
 │   ├── vae_latent_preparation.py
-│   └── latent_shap_ranking.py
+│   ├── latent_shap_ranking.py
+    └── phenotype_relevance_weighting.py
 ├── random_forest_shap/
 │   ├── README.md
 │   └── rf_shap_interactions.py
@@ -68,6 +69,10 @@ The codebase is structured into separate modules so that each stage of the pipel
 - The vae_latent_preparation/ module trains a variational autoencoder on genotype or feature matrices and exports latent representations.
 
 - It also includes a second script for ranking original SNPs/features per latent dimension using Random Forest and SHAP.
+- phenotype_relevance_weighting includes
+    -- latent dimensions + phenotype → phenotype-relevance weights
+    -- VAE-SHAP SNP scores × phenotype weights → ranked SNPs
+    -- MAF filter + LD pruning → final candidate SNPs
 
 3. Random Forest with SHAP interaction ranking
 
