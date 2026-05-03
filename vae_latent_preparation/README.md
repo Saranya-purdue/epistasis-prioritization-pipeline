@@ -16,7 +16,9 @@ The workflow is split into two steps:
 vae_latent_preparation/
 ├── README.md
 ├── vae_latent_preparation.py
-└── latent_shap_ranking.py
+├── latent_shap_ranking.py
+├── phenotype_relevance_weighting.py
+└── config_stage1_phenotype_relevance.template.json
 ```
 **Requirements**
 
@@ -123,7 +125,6 @@ python latent_shap_ranking.py \
   --normalize_input \
   --prefer_threads
 ```
-
 **Main outputs:**
 
 ```text
@@ -141,6 +142,60 @@ outputs/vae_shap/
 - latent_i_top_features.csv — top-ranked original features for latent dimension i
 - latent_i_shap_barplot.png — barplot of mean absolute SHAP values for latent dimension i
 - aggregated_top_snps.csv — aggregated feature ranking across latent dimensions
+
+**Step 3: Phenotype-relevance weighting of VAE-SHAP SNPs**
+
+phenotype_relevance_weighting.py links the unsupervised VAE latent space to a target phenotype. The goal is to prioritize SNPs that contribute to latent dimensions that are also predictive of the phenotype.
+
+-This step performs:
+
+-alignment of genotype, latent, phenotype, and covariate files by sample ID
+-Random Forest modelling from VAE latent dimensions to the phenotype
+-SHAP-based estimation of latent-dimension phenotype relevance
+-weighting of latent-specific SNP SHAP scores by phenotype-relevance weights
+-aggregation of weighted SNP scores across latent dimensions
+-MAF filtering
+-LD pruning
+-export of chromosome-specific candidate SNPs for downstream RF-SHAP interaction analysis
+
+**Configuration file**
+
+-Create a JSON config file, for example:
+
+```text
+configs/config_stage1_phenotype_relevance_education.json
+```
+**Main outputs**
+
+-For each chromosome:
+```text
+outputs/stage1_phenotype_relevance/education/chr1/
+├── latent_phenotype_weights.csv
+├── discovery_ids.csv
+├── holdout_ids.csv
+├── latent_snp_scores_long.csv
+├── weighted_snp_scores_unfiltered.csv
+├── snp_maf_values.csv
+├── final_ranked_snps_by_weighted_shap_maf.csv
+├── ld_pruned_removed_snps.csv
+└── final_ranked_snps_by_weighted_shap_maf_ld.csv
+```
+-Combined across chromosomes:
+```text
+outputs/stage1_phenotype_relevance/education/
+├── all_chromosomes_final_ranked_snps_by_weighted_shap_maf_ld.csv
+├── stage1_phenotype_relevance.log
+└── failed_chromosomes.csv
+```
+**Output file descriptions**
+
+-latent_phenotype_weights.csv — phenotype relevance weight for each VAE latent dimension.
+-latent_snp_scores_long.csv — latent-specific SNP SHAP scores with latent phenotype weights.
+-weighted_snp_scores_unfiltered.csv — SNP scores aggregated across latent dimensions before MAF/LD filtering.
+-snp_maf_values.csv — allele frequency and MAF for each candidate SNP.
+-final_ranked_snps_by_weighted_shap_maf.csv — SNPs after MAF filtering.
+-final_ranked_snps_by_weighted_shap_maf_ld.csv — final SNP list after MAF filtering and LD pruning.
+-ld_pruned_removed_snps.csv — SNPs removed during LD pruning and their correlation with retained SNPs.
 
 **Notes**
 
