@@ -149,14 +149,14 @@ phenotype_relevance_weighting.py links the unsupervised VAE latent space to a ta
 
 -This step performs:
 
--alignment of genotype, latent, phenotype, and covariate files by sample ID
--Random Forest modelling from VAE latent dimensions to the phenotype
--SHAP-based estimation of latent-dimension phenotype relevance
--weighting of latent-specific SNP SHAP scores by phenotype-relevance weights
--aggregation of weighted SNP scores across latent dimensions
--MAF filtering
--LD pruning
--export of chromosome-specific candidate SNPs for downstream RF-SHAP interaction analysis
+- alignment of genotype, latent, phenotype, and covariate files by sample ID
+- Random Forest modelling from VAE latent dimensions to the phenotype
+- SHAP-based estimation of latent-dimension phenotype relevance
+- weighting of latent-specific SNP SHAP scores by phenotype-relevance weights
+- aggregation of weighted SNP scores across latent dimensions
+- MAF filtering
+- LD pruning
+- export of chromosome-specific candidate SNPs for downstream RF-SHAP interaction analysis
 
 **Configuration file**
 
@@ -189,13 +189,13 @@ outputs/stage1_phenotype_relevance/education/
 ```
 **Output file descriptions**
 
--latent_phenotype_weights.csv — phenotype relevance weight for each VAE latent dimension.
--latent_snp_scores_long.csv — latent-specific SNP SHAP scores with latent phenotype weights.
--weighted_snp_scores_unfiltered.csv — SNP scores aggregated across latent dimensions before MAF/LD filtering.
--snp_maf_values.csv — allele frequency and MAF for each candidate SNP.
--final_ranked_snps_by_weighted_shap_maf.csv — SNPs after MAF filtering.
--final_ranked_snps_by_weighted_shap_maf_ld.csv — final SNP list after MAF filtering and LD pruning.
--ld_pruned_removed_snps.csv — SNPs removed during LD pruning and their correlation with retained SNPs.
+- latent_phenotype_weights.csv — phenotype relevance weight for each VAE latent dimension.
+- latent_snp_scores_long.csv — latent-specific SNP SHAP scores with latent phenotype weights.
+- weighted_snp_scores_unfiltered.csv — SNP scores aggregated across latent dimensions before MAF/LD filtering.
+- snp_maf_values.csv — allele frequency and MAF for each candidate SNP.
+- final_ranked_snps_by_weighted_shap_maf.csv — SNPs after MAF filtering.
+- final_ranked_snps_by_weighted_shap_maf_ld.csv — final SNP list after MAF filtering and LD pruning.
+- ld_pruned_removed_snps.csv — SNPs removed during LD pruning and their correlation with retained SNPs.
 
 **Notes**
 
