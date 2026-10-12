@@ -1,0 +1,3 @@
+-r requirements-core.txt
+shap>=0.44
+tensorflow>=2.13
