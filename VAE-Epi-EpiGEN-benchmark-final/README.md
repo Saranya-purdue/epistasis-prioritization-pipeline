@@ -1,20 +1,16 @@
 # VAE-Epi: EpiGEN benchmarking code
 
-This repository contains the portable analysis code used for the EpiGEN benchmarking of **VAE-Epi**. It was refactored from `Epigen_simulations-for_github.ipynb` into command-line scripts so that the workflow can be run without editing institution-specific paths or scheduler files.
-
+This repository contains the analysis code used for the EpiGEN benchmarking of **VAE-Epi**. 
 The repository covers two complementary benchmarks:
 
 - **Benchmark A — detector comparison in a common 2,000-SNP search space.** Four EpiGEN interaction architectures (joint dominant, joint recessive, multiplicative, exponential) are evaluated with 10, 50, and 100 true interaction pairs.
 - **Benchmark B — end-to-end prioritization benchmark.** A 10,000-SNP input is reduced to a phenotype-weighted VAE-prioritized 2,000-SNP set, followed by RF-SHAP / RF-SHAP-Taylor interaction screening. The full 10,000-SNP branch is retained as the comparison.
-
-The five analysis scripts that were called by the original notebook but stored separately are included under `scripts/core/`.
 
 ## Repository structure
 
 ```text
 .
 ├── README.md
-├── NOTEBOOK_MAPPING.md
 ├── REPRODUCIBILITY_NOTES.md
 ├── requirements-core.txt
 ├── requirements-vae.txt
@@ -108,31 +104,6 @@ Check the local environment with:
 python scripts/check_dependencies.py --epigen-root external/epigen
 ```
 
-## Quick reviewer smoke test
-
-The smoke test uses small generated data and exercises the calibration utilities without requiring manuscript-scale genotype data:
-
-```bash
-make smoke-test
-make test
-```
-
-Equivalent commands:
-
-```bash
-python scripts/generate_demo_data.py --outdir data/example
-
-python scripts/01_calibrate_epigen_alpha.py \
-  --genotype data/example/genotype.csv \
-  --pairs data/example/causal_pairs.csv \
-  --target 0.10 \
-  --noise_sd 1.0 \
-  --out data/example/calibration
-
-python -m pytest -q
-```
-
-The smoke test verifies code execution only; it does not reproduce the manuscript-scale EpiGEN results.
 
 # Benchmark A: common 2,000-SNP detector comparison
 
@@ -391,13 +362,9 @@ results/benchmark_b/benchmark_B_summary/benchmarkB_master_metrics.csv
 
 ## Reproducibility conventions
 
-- Random seeds are command-line arguments rather than hidden notebook state.
 - Benchmark A compares detectors within a common 2,000-SNP candidate space.
 - Benchmark B evaluates the full end-to-end pipeline and therefore counts causal pairs lost during upstream VAE prioritization as false negatives in end-to-end recall.
 - Conditional recall is retained separately to distinguish downstream ranking performance from upstream selection/screening loss.
 - For 10,000 SNPs there are 49,995,000 unordered pairs; for 2,000 SNPs there are 1,999,000, corresponding to a nominal pair-space reduction of about 96%.
 - Large genotype matrices and manuscript-scale outputs are not committed to the public repository. See `data/README.md`.
 
-## Provenance
-
-`NOTEBOOK_MAPPING.md` maps the original notebook cells to the corresponding portable scripts. The core detector/VAE scripts supplied separately from the notebook are included under `scripts/core/`.
