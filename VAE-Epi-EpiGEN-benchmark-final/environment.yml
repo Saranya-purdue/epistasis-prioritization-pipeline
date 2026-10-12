@@ -1,0 +1,15 @@
+name: vae-epi-epigen
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.10
+  - numpy
+  - pandas
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - pip
+  - pip:
+      - shap
+      - tensorflow
+      - pytest
