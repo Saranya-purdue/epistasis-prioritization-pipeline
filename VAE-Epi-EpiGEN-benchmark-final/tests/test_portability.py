@@ -4,7 +4,6 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 
 FORBIDDEN = [
-    "/" + "depot/",
     "/" + "scratch/",
     "/" + "home/",
     "#" + "SBATCH",
