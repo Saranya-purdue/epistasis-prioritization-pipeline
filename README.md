@@ -21,36 +21,83 @@ The codebase is structured into separate modules so that each stage of the pipel
 ## Repository structure
 
 ```text
+VAE-Epi/
 ├── README.md
+│
 ├── simulation/
 │   ├── README.md
 │   ├── simulate1.py
 │   ├── run_simulation1.py
 │   ├── simulate2.py
 │   └── run_simulation2.py
+│
+├── epigen_benchmark/
+│   ├── README.md
+│   ├── REPRODUCIBILITY_NOTES.md
+│   ├── requirements-core.txt
+│   ├── requirements-vae.txt
+│   ├── environment.yml
+│   ├── Makefile
+│   │
+│   ├── data/
+│   │   └── README.md
+│   │
+│   ├── external/
+│   │   └── README.md
+│   │
+│   ├── scripts/
+│   │   ├── core/
+│   │   │   ├── 00_prepare_sim1_inputs.py
+│   │   │   ├── 02_run_tree_ml_baselines.py
+│   │   │   ├── 03_run_rf_shap_pair_recovery.py
+│   │   │   ├── 03b_run_rfshap_taylor_pair_recovery.py
+│   │   │   └── vae_shap_ld_cpu.py
+│   │   │
+│   │   └── benchmark_b/
+│   │       ├── 01_build_nested_benchmark_genotypes.py
+│   │       ├── 02_export_latent_and_perlatent_shap.py
+│   │       ├── 03_weighted_vae_select_2000.py
+│   │       ├── 04_check_weighted_truth_retention.py
+│   │       ├── 05_random_2000_retention.py
+│   │       ├── 06_summarize_benchmark_b.py
+│   │       ├── 07_plot_benchmark_b.py
+│   │       └── 08_plot_architecture_metrics.py
+│   │
+│   └── tests/
+│       ├── test_calibration.py
+│       ├── test_nested_builder_helpers.py
+│       └── test_portability.py
+│
 ├── vae_latent_preparation/
 │   ├── README.md
 │   ├── vae_latent_preparation.py
 │   ├── latent_shap_ranking.py
-    └── phenotype_relevance_weighting.py
+│   └── phenotype_relevance_weighting.py
+│
 ├── random_forest_shap/
 │   ├── README.md
 │   └── rf_shap_interactions.py
+│
 ├── gwas/
 │   ├── README.md
 │   └── run_gwas_plink.sh
+│
 ├── three_p_rule/
 │   ├── README.md
 │   └── three_p_rule_pipeline.py
+│
 ├── variance_computation/
 │   ├── README.md
 │   └── variance_computation.py
+│
 ├── deviation_from_additivity/
 │   ├── README.md
 │   └── deviation_from_additivity.py
+│
 ├── fuma_analysis/
 │   ├── README.md
 │   └── fuma_analysis.py
+│
 └── pathway_enrichment/
     ├── README.md
     └── pathway_enrichment_analysis.py
