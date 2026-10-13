@@ -5,14 +5,14 @@ from pathlib import Path
 
 import pandas as pd
 
-from simulate2 import simulate_phenotype_sim2
+from simulate1 import simulate_phenotype_sim1
 
 
 # ----------------------------
 # User settings
 # ----------------------------
 GENOTYPE_PATH = "./geno.csv"
-OUTPUT_DIR = "./simulation2_outputs"
+OUTPUT_DIR = "./simulation1_outputs"
 
 CAUSAL_SNP_SIZES = [15, 50, 100, 250]
 
@@ -38,13 +38,13 @@ def main() -> None:
 
     for idx, num_causal_snp in enumerate(CAUSAL_SNP_SIZES, start=1):
         scenario_seed = BASE_SEED + idx
-        scenario_name = f"sim2_n{num_causal_snp}"
+        scenario_name = f"sim1_n{num_causal_snp}"
         scenario_dir = output_dir / scenario_name
         scenario_dir.mkdir(parents=True, exist_ok=True)
 
         print(f"\nRunning {scenario_name} | seed={scenario_seed}")
 
-        sim_result = simulate_phenotype_sim2(
+        sim_result = simulate_phenotype_sim1(
             geno_df=geno_df,
             num_causal_snp=num_causal_snp,
             tot_h2=TOT_H2,
@@ -97,9 +97,9 @@ def main() -> None:
         )
 
     summary_df = pd.DataFrame(summary_rows)
-    summary_df.to_csv(output_dir / "simulation2_summary.csv", index=False)
+    summary_df.to_csv(output_dir / "simulation1_summary.csv", index=False)
 
-    print(f"\nDone. Summary saved to: {output_dir / 'simulation2_summary.csv'}")
+    print(f"\nDone. Summary saved to: {output_dir / 'simulation1_summary.csv'}")
 
 
 if __name__ == "__main__":
