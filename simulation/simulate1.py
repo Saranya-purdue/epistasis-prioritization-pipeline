@@ -38,7 +38,7 @@ def _rescale_effects(score: np.ndarray, target_variance: float) -> float:
     return np.sqrt(target_variance / current_variance)
 
 
-def simulate_phenotype_sim2(
+def simulate_phenotype_sim1(
     geno_df: pd.DataFrame,
     num_causal_snp: int,
     tot_h2: float = 0.2,
@@ -46,7 +46,7 @@ def simulate_phenotype_sim2(
     seed: int = 42,
 ) -> Dict[str, Any]:
     """
-    Simulation 2:
+    Simulation 1:
     - select N causal SNPs
     - split them into s1, s2, s3
     - build epistatic interactions only between s1 and s2
