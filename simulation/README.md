@@ -152,7 +152,7 @@ This creates a strongly non-additive phenotype architecture.
 
 **Simulation design**
 
-Simulation 1 evaluates the Cartesian product of:
+Simulation 2 evaluates the Cartesian product of:
 
 causal SNP counts: 15, 50, 100, 250
 
@@ -181,7 +181,7 @@ So the number of interaction terms is:
 - 250 SNPs → 31,125 pairs
 
 **Files:**
-- simulate1.py
+- simulate2.py
 - Contains the core Simulation 2 function:
 - genotype standardization
 - selection of overlapping additive and epistatic SNP sets
@@ -230,7 +230,6 @@ simulation2_outputs/
 **Notes**
 
 - Genotypes are standardized before phenotype generation.
-- Missing values are mean-imputed in Simulation 1 before standardization.
 - Additive and epistatic components are rescaled to target the requested variance contributions.
 - Different seeds can be used across scenarios for reproducibility.
 - Simulation 1 uses structured cross-block interactions only.
