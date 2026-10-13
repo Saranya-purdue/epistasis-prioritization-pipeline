@@ -109,8 +109,8 @@ VAE-Epi/
 
 - It includes:
 
-    - Simulation 1: overlapping additive and epistatic SNP sets with all pairwise interactions
-    - Simulation 2: Sparse Epistatic Architecture with Controlled Interaction Complexity
+    - Simulation 1: Sparse Epistatic Architecture with Controlled Interaction Complexity
+    - Simulation 2: overlapping additive and epistatic SNP sets with all pairwise interactions (A and B)
 2. VAE latent space preparation
 
 - The vae_latent_preparation/ module trains a variational autoencoder on genotype or feature matrices and exports latent representations.
