@@ -12,7 +12,7 @@ from simulate import simulate_phenotype_with_overlap, standardize_genotype_df
 # User settings
 # ----------------------------
 GENOTYPE_PATH = "./snps_data.csv"
-OUTPUT_DIR = "./simulation1_outputs"
+OUTPUT_DIR = "./simulation2A_outputs"
 
 CAUSAL_SNP_SIZES = [15, 50, 100, 250]
 OVERLAP_PROPORTIONS = [0.3, 0.5, 0.7, 0.9]
@@ -116,8 +116,8 @@ def main() -> None:
             )
 
     summary_df = pd.DataFrame(summary_rows)
-    summary_df.to_csv(output_dir / "simulation1_summary.csv", index=False)
-    print(f"\nDone. Summary saved to: {output_dir / 'simulation1_summary.csv'}")
+    summary_df.to_csv(output_dir / "simulation2A_summary.csv", index=False)
+    print(f"\nDone. Summary saved to: {output_dir / 'simulation2A_summary.csv'}")
 
 
 if __name__ == "__main__":
