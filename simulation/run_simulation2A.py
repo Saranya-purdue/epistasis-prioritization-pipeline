@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from simulate import simulate_phenotype_with_overlap, standardize_genotype_df
+from simulate2 import simulate_phenotype_with_overlap, standardize_genotype_df
 
 
 # ----------------------------
@@ -47,7 +47,7 @@ def main() -> None:
             scenario_counter += 1
             scenario_seed = BASE_SEED + scenario_counter
 
-            scenario_name = f"sim1_n{n_snps}_overlap{str(overlap).replace('.', 'p')}"
+            scenario_name = f"sim2A_n{n_snps}_overlap{str(overlap).replace('.', 'p')}"
             scenario_dir = output_dir / scenario_name
             scenario_dir.mkdir(parents=True, exist_ok=True)
 
