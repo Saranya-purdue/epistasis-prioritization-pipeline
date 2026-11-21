@@ -217,18 +217,6 @@ For every scenario:
 num_additive = N
 num_epistatic = N
 ```
-
-The number of overlapping SNPs is calculated as:
-
-\[
-n_{\mathrm{overlap}}
-=
-\left\lfloor
-\min(n_{\mathrm{add}},n_{\mathrm{epi}})
-\times p_{\mathrm{overlap}}
-\right\rfloor
-\]
-
 Broad-sense heritability is fixed at:
 
 ```text
@@ -263,15 +251,6 @@ Genotypes are standardized before phenotype generation.
 Simulation 2A represents a dense epistatic architecture.
 
 After selecting the epistatic causal SNP set, all possible pairwise multiplicative interactions among those SNPs are included in the phenotype.
-
-For \(N\) epistatic SNPs, the number of true interaction pairs is:
-
-\[
-K =
-\binom{N}{2}
-=
-\frac{N(N-1)}{2}
-\]
 
 The resulting numbers of ground-truth interaction pairs are:
 
